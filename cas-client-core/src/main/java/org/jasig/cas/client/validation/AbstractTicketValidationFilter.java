@@ -374,7 +374,7 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
 									final Iterator<JsonElement> attrElementItr = arr.iterator();
 									List<String> strArray =new ArrayList<String>();
 									while (attrElementItr.hasNext()) {
-										strArray.add(attrItr.next().getAsString());
+										strArray.add(attrElementItr.next().getAsString());
 									}
 									attributes.put(attr.getKey(), strArray);
 								}
