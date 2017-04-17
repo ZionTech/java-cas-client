@@ -23,8 +23,10 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -365,7 +367,21 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
 							final Iterator<Entry<String, JsonElement>> joItr = jo.entrySet().iterator();
 							while (joItr.hasNext()) {
 								Entry<String, JsonElement> attr = joItr.next();
-								attributes.put(attr.getKey(), attr.getValue().getAsString());
+								if(attr.getValue() instanceof JsonArray)
+								{
+									// TODO convert json array to string array
+									JsonArray arr = attr.getValue().getAsJsonArray();
+									final Iterator<JsonElement> attrElementItr = arr.iterator();
+									List<String> strArray =new ArrayList<String>();
+									while (attrElementItr.hasNext()) {
+										strArray.add(attrItr.next().getAsString());
+									}
+									attributes.put(attr.getKey(), strArray);
+								}
+								else
+								{
+									attributes.put(attr.getKey(), attr.getValue().getAsString());
+								}
 							}
 						}
 					} else if (entry.getKey().equalsIgnoreCase("tgtId")) {
