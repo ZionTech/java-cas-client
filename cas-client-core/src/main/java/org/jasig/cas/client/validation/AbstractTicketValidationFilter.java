@@ -393,64 +393,63 @@ public abstract class AbstractTicketValidationFilter extends AbstractCasFilter {
 				
 				// Use ticket granting ticket to retrieve a service ticket.
 				CommonUtils.assertNotNull(tgtId, "Ticket granting ticket can't be null");
-				logger.debug("TGT ID {}", tgtId);
-				String requestUri = String.format("/auth/v1/tickets/%s", tgtId);
-				builder = new StringBuilder();
-				builder
-					.append(serverNamePort)
-					.append(requestUri);
-				final Map<String, String> postParams = new HashMap<String, String>();
-				postParams.put("service", request.getRequestURL().toString());
-				logger.debug("TGT request URL {}", requestUri);
-				final String serviceTicket = CommonUtils.getResponseFromServer(new URL(builder.toString()),
-						new HttpsURLConnectionFactory(), getString(ConfigurationKeys.ENCODING), null, postParams);
-				CommonUtils.assertNotNull(serviceTicket, "Service ticket can't be null");
-				logger.debug("Service ticket {}", serviceTicket);
-				builder = new StringBuilder();
-				requestUri = String
-						.format("/auth/p3/proxyValidate?ticket=%s&service=%s&pgtUrl=%s", serviceTicket, request.getRequestURL(), 
-								getString(ConfigurationKeys.PROXY_CALLBACK_URL));
-				builder
-					.append(serverNamePort)
-					.append(requestUri);
-				
-				// Create a map for header information and put an extra command to remove the service ticket after PT is created.
-				final Map<String, String> headers = new HashMap<String, String>();
-				headers.put("x-command", "rm-st");
-				logger.debug("Proxy validate URL {}", builder.toString());
-				final String validateResponse = CommonUtils.getResponseFromServer(new URL(builder.toString()),
-						new HttpsURLConnectionFactory(), getString(ConfigurationKeys.ENCODING), headers);
-				logger.debug("Proxy validate response {}", validateResponse);
-				final String proxyGrantingTicketIou = XmlUtils.getTextForElement(validateResponse, "proxyGrantingTicket");
-				logger.debug("Proxy Granting Ticket IOU {}", proxyGrantingTicketIou);
-				final String proxyGrantingTicket;
-				
-				// Cast this class to use the method implemented in the parent class.
-				final Cas30ProxyTicketValidator validator = (Cas30ProxyTicketValidator) this.ticketValidator;
-		        if (CommonUtils.isBlank(proxyGrantingTicketIou) || validator.getProxyGrantingTicketStorage() == null) {
-		            proxyGrantingTicket = null;
-		        } else {
-		            proxyGrantingTicket = validator.getProxyGrantingTicketStorage().retrieve(proxyGrantingTicketIou);
-		        }
-		        
-		        CommonUtils.assertNotNull(proxyGrantingTicket, "Proxy Granting Ticket cannot be null");
-		        logger.debug("Proxy Granting Ticket {}", proxyGrantingTicket);
-		        
-				if (principal == null || CommonUtils.isBlank(principal)) {
-					throw new TicketValidationException("No principal was found in the response from the CAS server.");
+				if (!tgtId.trim().isEmpty()) {
+					logger.debug("TGT ID {}", tgtId);
+					String requestUri = String.format("/auth/v1/tickets/%s", tgtId);
+					builder = new StringBuilder();
+					builder.append(serverNamePort).append(requestUri);
+					final Map<String, String> postParams = new HashMap<String, String>();
+					postParams.put("service", request.getRequestURL().toString());
+					logger.debug("TGT request URL {}", requestUri);
+					final String serviceTicket = CommonUtils.getResponseFromServer(new URL(builder.toString()),
+							new HttpsURLConnectionFactory(), getString(ConfigurationKeys.ENCODING), null, postParams);
+					CommonUtils.assertNotNull(serviceTicket, "Service ticket can't be null");
+					logger.debug("Service ticket {}", serviceTicket);
+					builder = new StringBuilder();
+					requestUri = String.format("/auth/p3/proxyValidate?ticket=%s&service=%s&pgtUrl=%s", serviceTicket,
+							request.getRequestURL(), getString(ConfigurationKeys.PROXY_CALLBACK_URL));
+					builder.append(serverNamePort).append(requestUri);
+					// Create a map for header information and put an extra command to remove the service ticket after PT is created.
+					final Map<String, String> headers = new HashMap<String, String>();
+					headers.put("x-command", "rm-st");
+					logger.debug("Proxy validate URL {}", builder.toString());
+					final String validateResponse = CommonUtils.getResponseFromServer(new URL(builder.toString()),
+							new HttpsURLConnectionFactory(), getString(ConfigurationKeys.ENCODING), headers);
+					logger.debug("Proxy validate response {}", validateResponse);
+					final String proxyGrantingTicketIou = XmlUtils.getTextForElement(validateResponse,
+							"proxyGrantingTicket");
+					logger.debug("Proxy Granting Ticket IOU {}", proxyGrantingTicketIou);
+					final String proxyGrantingTicket;
+					// Cast this class to use the method implemented in the parent class.
+					final Cas30ProxyTicketValidator validator = (Cas30ProxyTicketValidator) this.ticketValidator;
+					if (CommonUtils.isBlank(proxyGrantingTicketIou)
+							|| validator.getProxyGrantingTicketStorage() == null) {
+						proxyGrantingTicket = null;
+					} else {
+						proxyGrantingTicket = validator.getProxyGrantingTicketStorage()
+								.retrieve(proxyGrantingTicketIou);
+					}
+					CommonUtils.assertNotNull(proxyGrantingTicket, "Proxy Granting Ticket cannot be null");
+					logger.debug("Proxy Granting Ticket {}", proxyGrantingTicket);
+					if (principal == null || CommonUtils.isBlank(principal)) {
+						throw new TicketValidationException(
+								"No principal was found in the response from the CAS server.");
+					}
+					assertion = new AssertionImpl(new AttributePrincipalImpl(principal, attributes, proxyGrantingTicket,
+							validator.getCas20ProxyRetriever()));
+					request.setAttribute(CONST_CAS_ASSERTION, assertion);
+					if (this.useSession) {
+						request.getSession().setAttribute(CONST_CAS_ASSERTION, assertion);
+					}
+					if (this.redirectAfterValidation) {
+						logger.debug("Redirecting after successful ticket validation.");
+						response.sendRedirect(constructServiceUrl(request, response));
+						return false;
+					} 
 				}
-				assertion = new AssertionImpl(new AttributePrincipalImpl(principal, attributes,
-			            proxyGrantingTicket, validator.getCas20ProxyRetriever()));
-				request.setAttribute(CONST_CAS_ASSERTION, assertion);
-
-				if (this.useSession) {
-					request.getSession().setAttribute(CONST_CAS_ASSERTION, assertion);
-				}
-
-				if (this.redirectAfterValidation) {
-					logger.debug("Redirecting after successful ticket validation.");
-					response.sendRedirect(constructServiceUrl(request, response));
-					return false;
+				else
+				{
+					logger.info("tgtid id empty");
 				}
 			} catch (final TicketValidationException e) {
 				logger.debug(e.getMessage(), e);
