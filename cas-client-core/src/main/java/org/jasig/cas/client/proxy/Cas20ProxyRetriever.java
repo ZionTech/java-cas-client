@@ -90,7 +90,7 @@ public final class Cas20ProxyRetriever implements ProxyRetriever {
         final String error = XmlUtils.getTextForElement(response, "proxyFailure");
 
         if (CommonUtils.isNotEmpty(error)) {
-            logger.debug(error);
+            logger.warn(error);
             return null;
         }
 
