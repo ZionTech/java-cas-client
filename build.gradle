@@ -11,8 +11,8 @@ buildscript {
         }
 	}
 	dependencies {
-        classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '3.1.0')
-        classpath(group: 'wavity-gradle-plugins', name: 'plugins', version: '1.0.0')
+        classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '4.0.0')
+        classpath(group: 'wavity-gradle-plugins', name: 'plugins', version: '2.0.0')
     }
     configurations.all {
 		resolutionStrategy.eachDependency { DependencyResolveDetails details ->
@@ -39,12 +39,6 @@ allprojects  {
 	apply plugin: 'com.wavity.version'
 
 	group = 'wavity-cas-client'
-	// specify this artifact version using the plugin 'com.wavity.version'
-	versions {
-		major = version_major
-		minor = version_minor
-		release = version_release
-	}
 	version = project.versions.getWavityVersion()
 }
 
@@ -71,13 +65,13 @@ subprojects {
 		maven { url "https://maven.atlassian.com/repository/public" }
 		maven { url "https://repository.jboss.org/nexus/content/groups/public//" }
 	}
-	
+
 	dependencies {
 		// logging
 		compile (group: 'org.slf4j', name: 'slf4j-api', version: project.versions.slf4jVersion)
 		testCompile (group: 'ch.qos.logback', name: 'logback-classic', version: project.versions.logbackVersion)
 		testCompile (group: 'ch.qos.logback', name: 'logback-core', version: project.versions.logbackVersion)
-	
+
 		// javaee
 		compile (group: 'javax', name: 'javaee-api', version: project.versions.javaeeVersion)
 		compile (group: 'javax', name: 'javaee-web-api', version: project.versions.javaeeVersion)
@@ -94,13 +88,12 @@ subprojects {
 		exclude group: 'org.slf4j'
 		exclude group: 'log4j'
 		exclude group: 'commons-logging'
-	}  
+	}
 
-	
+
 		// unit test
 		testCompile (group: 'junit', name: 'junit', version: project.versions.junitVersion)
 	}
 }
 
 // EOF
-
