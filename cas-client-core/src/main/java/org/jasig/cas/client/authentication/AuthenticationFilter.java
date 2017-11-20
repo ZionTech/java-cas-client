@@ -171,7 +171,6 @@ public class AuthenticationFilter extends AbstractCasFilter {
         final HttpServletRequest request = (HttpServletRequest) servletRequest;
         final HttpServletResponse response = (HttpServletResponse) servletResponse;
         
-        System.setProperty("https.protocols", "TLSv1.2");
         if (isRequestUrlExcluded(request)) {
             logger.debug("Request is ignored.");
             filterChain.doFilter(request, response);
