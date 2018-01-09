@@ -21,9 +21,13 @@ package org.jasig.cas.client.validation;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
+
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.jasig.cas.client.authentication.AttributePrincipalImpl;
 import org.jasig.cas.client.util.CommonUtils;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Concrete Implementation of the {@link Assertion}.
@@ -33,24 +37,27 @@ import org.jasig.cas.client.util.CommonUtils;
  * @since 3.1
  * 
  */
-public final class AssertionImpl implements Assertion {
+public  class AssertionImpl implements Assertion {
 
     /** Unique Id for serialization. */
     private static final long serialVersionUID = -7767943925833639221L;
 
     /** The date from which the assertion is valid. */
-    private final Date validFromDate;
+    private  Date validFromDate;
 
     /** The date the assertion is valid until. */
-    private final Date validUntilDate;
+    private  Date validUntilDate;
 
-    private final Date authenticationDate;
+    private  Date authenticationDate;
 
     /** Map of key/value pairs associated with this assertion. I.e. authentication type. */
-    private final Map<String, Object> attributes;
+    private  Map<String, Object> attributes;
 
     /** The principal for which this assertion is valid for. */
-    private final AttributePrincipal principal;
+    private  AttributePrincipal principal;
+    
+    public AssertionImpl() {
+  }
 
     /**
      * Constructs a new Assertion with a Principal of the supplied name, a valid from date of now, no valid until date, and no attributes.
@@ -88,8 +95,13 @@ public final class AssertionImpl implements Assertion {
      * @param validUntilDate when the assertion is valid to.
      * @param attributes the key/value pairs for this attribute.
      */
-    public AssertionImpl(final AttributePrincipal principal, final Date validFromDate, final Date validUntilDate,
-            final Date authenticationDate, final Map<String, Object> attributes) {
+    @JsonCreator
+    public AssertionImpl(
+        @JsonProperty("principal") final AttributePrincipal principal,
+        @JsonProperty("validFromDate") final Date validFromDate,
+        @JsonProperty("validUntilDate") final Date validUntilDate,
+        @JsonProperty("authenticationDate") final Date authenticationDate,
+        @JsonProperty("attributes") final Map<String, Object> attributes) {
         this.principal = principal;
         this.validFromDate = validFromDate;
         this.validUntilDate = validUntilDate;

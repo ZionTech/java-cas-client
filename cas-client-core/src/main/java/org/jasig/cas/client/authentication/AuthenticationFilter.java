@@ -39,6 +39,7 @@ import org.jasig.cas.client.util.AbstractCasFilter;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.util.ReflectUtils;
 import org.jasig.cas.client.validation.Assertion;
+import org.jasig.cas.client.validation.AssertionImpl;
 
 /**
  * Filter implementation to intercept all requests and attempt to authenticate
@@ -178,7 +179,7 @@ public class AuthenticationFilter extends AbstractCasFilter {
         }
         
         final HttpSession session = request.getSession(false);
-        final Assertion assertion = session != null ? (Assertion) session.getAttribute(CONST_CAS_ASSERTION) : null;
+        final Assertion assertion = session != null ? (AssertionImpl) session.getAttribute(CONST_CAS_ASSERTION) : null;
 
         if (assertion != null) {
             filterChain.doFilter(request, response);

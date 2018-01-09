@@ -72,6 +72,8 @@ subprojects {
 		testCompile (group: 'ch.qos.logback', name: 'logback-classic', version: project.versions.logbackVersion)
 		testCompile (group: 'ch.qos.logback', name: 'logback-core', version: project.versions.logbackVersion)
 
+                compile (group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: project.versions.jacksonVersion)
+
 		// javaee
 		compile (group: 'javax', name: 'javaee-api', version: project.versions.javaeeVersion)
 		compile (group: 'javax', name: 'javaee-web-api', version: project.versions.javaeeVersion)
