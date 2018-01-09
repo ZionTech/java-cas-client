@@ -28,6 +28,9 @@ import org.jasig.cas.client.util.CommonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * An implementation of the {@link HttpURLConnectionFactory} whose responsible to configure
  * the underlying <i>https</i> connection, if needed, with a given hostname and SSL socket factory based on the
@@ -58,7 +61,8 @@ public final class HttpsURLConnectionFactory implements HttpURLConnectionFactory
     public HttpsURLConnectionFactory() {
     }
 
-    public HttpsURLConnectionFactory(final HostnameVerifier verifier, final Properties config) {
+    @JsonCreator
+    public HttpsURLConnectionFactory(@JsonProperty("verifier") final HostnameVerifier verifier, @JsonProperty("config") final Properties config) {
         setHostnameVerifier(verifier);
         setSSLConfiguration(config);
     }

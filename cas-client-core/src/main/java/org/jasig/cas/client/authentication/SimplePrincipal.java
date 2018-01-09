@@ -36,8 +36,10 @@ public class SimplePrincipal implements Principal, Serializable {
     private static final long serialVersionUID = -5645357206342793145L;
 
     /** The unique identifier for this principal. */
-    private final String name;
+    private  String name;
 
+    public SimplePrincipal() {
+  }
     /**
      * Creates a new principal with the given name.
      * @param name Principal name.

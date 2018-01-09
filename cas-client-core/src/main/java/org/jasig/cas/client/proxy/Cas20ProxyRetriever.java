@@ -20,11 +20,15 @@ package org.jasig.cas.client.proxy;
 
 import java.net.URL;
 import java.net.URLEncoder;
+
 import org.jasig.cas.client.ssl.HttpURLConnectionFactory;
 import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.util.XmlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Implementation of a ProxyRetriever that follows the CAS 2.0 specification.
@@ -38,7 +42,8 @@ import org.slf4j.LoggerFactory;
  * @author Scott Battaglia
  * @since 3.0
  */
-public final class Cas20ProxyRetriever implements ProxyRetriever {
+
+public  class Cas20ProxyRetriever implements ProxyRetriever {
 
     /** Unique Id for serialization. */
     private static final long serialVersionUID = 560409469568911792L;
@@ -48,16 +53,19 @@ public final class Cas20ProxyRetriever implements ProxyRetriever {
     /**
      * Url to CAS server.
      */
-    private final String casServerUrl;
+    private  String casServerUrl;
 
-    private final String encoding;
+    private  String encoding;
 
     /** Url connection factory to use when communicating with the server **/
-    private final HttpURLConnectionFactory urlConnectionFactory;
+    private  HttpURLConnectionFactory urlConnectionFactory;
 
     @Deprecated
     public Cas20ProxyRetriever(final String casServerUrl, final String encoding) {
         this(casServerUrl, encoding, null);
+    }
+    
+    public Cas20ProxyRetriever() {
     }
 
     /**
@@ -67,8 +75,11 @@ public final class Cas20ProxyRetriever implements ProxyRetriever {
      * @param encoding the encoding to use.
      * @param urlFactory url connection factory use when retrieving proxy responses from the server
      */
-    public Cas20ProxyRetriever(final String casServerUrl, final String encoding,
-            final HttpURLConnectionFactory urlFactory) {
+    @JsonCreator
+    public Cas20ProxyRetriever(
+        @JsonProperty("casServerUrl") final String casServerUrl,
+        @JsonProperty("encoding") final String encoding,
+        @JsonProperty("urlFactory") final HttpURLConnectionFactory urlFactory) {
         CommonUtils.assertNotNull(casServerUrl, "casServerUrl cannot be null.");
         this.casServerUrl = casServerUrl;
         this.encoding = encoding;

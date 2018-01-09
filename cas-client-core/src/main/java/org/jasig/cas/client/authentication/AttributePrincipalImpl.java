@@ -20,10 +20,14 @@ package org.jasig.cas.client.authentication;
 
 import java.util.Collections;
 import java.util.Map;
+
 import org.jasig.cas.client.proxy.ProxyRetriever;
 import org.jasig.cas.client.util.CommonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Concrete implementation of the AttributePrincipal interface.
@@ -39,13 +43,17 @@ public class AttributePrincipalImpl extends SimplePrincipal implements Attribute
     private static final long serialVersionUID = -1443182634624927187L;
 
     /** Map of key/value pairs about this principal. */
-    private final Map<String, Object> attributes;
+    private  Map<String, Object> attributes;
 
     /** The CAS 2 ticket used to retrieve a proxy ticket. */
-    private final String proxyGrantingTicket;
+    private  String proxyGrantingTicket;
 
     /** The method to retrieve a proxy ticket from a CAS server. */
-    private final ProxyRetriever proxyRetriever;
+    private  ProxyRetriever proxyRetriever;
+    
+    public AttributePrincipalImpl() {
+      super();
+  }
 
     /**
      * Constructs a new principal with an empty map of attributes.
@@ -86,8 +94,13 @@ public class AttributePrincipalImpl extends SimplePrincipal implements Attribute
      * @param proxyGrantingTicket the ticket associated with this principal.
      * @param proxyRetriever the ProxyRetriever implementation to call back to the CAS server.
      */
-    public AttributePrincipalImpl(final String name, final Map<String, Object> attributes,
-            final String proxyGrantingTicket, final ProxyRetriever proxyRetriever) {
+    @JsonCreator
+    public AttributePrincipalImpl(
+        @JsonProperty("name") final String name,
+        @JsonProperty("attributes") final Map<String, Object> attributes,
+        @JsonProperty("proxyGrantingTicket") final String proxyGrantingTicket,
+        @JsonProperty("proxyRetriever") final ProxyRetriever proxyRetriever)
+    {
         super(name);
         this.attributes = attributes;
         this.proxyGrantingTicket = proxyGrantingTicket;
