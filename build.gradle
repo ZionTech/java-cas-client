@@ -1,14 +1,14 @@
 
 buildscript {
 	repositories {
-		jcenter()
 		maven {
-            url "${artifactory_contextUrl}/wavity"
-            credentials {
-                username = "${artifactory_user}"
-                password = "${artifactory_password}"
-            }
+        url "${artifactory_contextUrl}/wavity"
+        credentials {
+            username = "${artifactory_user}"
+            password = "${artifactory_password}"
         }
+    }
+		jcenter()
 	}
 	dependencies {
         classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '4.0.0')
@@ -54,16 +54,15 @@ subprojects {
 				password = "${artifactory_password}"
 			}
 		}
-		//mavenLocal()
-		mavenCentral()
 		jcenter()
-		maven {
-			url 'https://maven.java.net/content/repositories/releases'
-		}
-		maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
-		maven { url "http://repo.maven.apache.org/maven2" }
-		maven { url "https://maven.atlassian.com/repository/public" }
-		maven { url "https://repository.jboss.org/nexus/content/groups/public//" }
+		mavenCentral()
+		//maven {
+		//	url 'https://maven.java.net/content/repositories/releases'
+		//}
+		//maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+		//maven { url "http://repo.maven.apache.org/maven2" }
+		//maven { url "https://maven.atlassian.com/repository/public" }
+		//maven { url "https://repository.jboss.org/nexus/content/groups/public//" }
 	}
 
 	dependencies {
